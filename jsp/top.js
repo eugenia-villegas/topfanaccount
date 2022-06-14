@@ -1,65 +1,85 @@
-    //Defino en const los elementos que uso en el formulario
-const form = document.getElementById('form');
-const username = document.getElementById('username');
-const lastname = document.getElementById('lastname');
-const email = document.getElementById('email');
-const comments = document.getElementById('comments');
+let nameError = document.getElementById('name-error');
+let phoneError = document.getElementById('phone-error');
+let emailError = document.getElementById('email-error');
+let messageError = document.getElementById('message-error');
+let submitError = document.getElementById('submit-error');
 
-
-form.addEventListener('submit', e => {
-    e.preventDefault();
-
-    checkInputs();
-});
-
-function checkInputs() {
-    //Obtener valores de los input
-    const usernameValue = username.value;
-    const lastnameValue = lastname.value.trim();
-    const emailValue = email.value.trim();
-    const commentsValue = comments.value.trim();
-
-    if(usernameValue === '') {
-        //mostrar error nombre
-        setErrorFor(username, 'Username cannot be blank');
-    } else {
-            //mostrar exito nombre
-            setSuccessFor(username);
+function validateName(){
+    let name = document.getElementById('contact-name').value;
+    /*Validation for when its empty*/
+    if (name.length == 0) {
+        nameError.innerHTML = 'Name is required';
+        return false;
+    };
+    /*Validation whe the format isnt the correct one*/
+    if (!name.match(/^[A-Za-z]*\s{1}[A-Za-z]*$/)) {
+        nameError.innerHTML = 'Write full name';
+        return false;
     }
-
-    if(lastnameValue === '') {
-        //mostrar error apellido
-        setErrorFor(lastname, 'Last Name cannot be blank');
-    } else {
-            //mostrar exito apellido
-            setSuccess(lastname);
-        }    
-
-    if(emailValue === '') {
-        setErrorFor(email, 'Email cannot be blank');
-    } else if (!isEmail(emailValue)) {
-        setErrorFor(email, 'Not a valid email');
-    } else {
-        setSuccessFor(email);
-    }
-
-    if(commentsValue === '') {
-        //mostrar error comentarios
-        setErrorFor(comments, 'This space cannot be blank');
-    } else {
-            //mostrar exito comentarios
-            setSuccess(comments);
-        }
+    /*Validation when its ok*/
+    nameError.innerHTML = '<i class=\"fa-solid fa-circle-check\"></i>';
+    return true;
 }
 
-function setErrorFor(input, message) {
-	const formControl = input.parentElement;
-	const small = formControl.querySelector('small');
-	formControl.className = 'form-control error';
-	small.innerText = message;
+function validatePhone(){
+    let phone = document.getElementById('contact-phone').value;
+    /*Validation for when its empty*/
+    if (phone.length == 0) {
+        phoneError.innerHTML = 'Phone is required';
+        return false;
+    };
+    if (phone.length !== 11) {
+        phoneError.innerHTML = 'Phone should be 11 digits';
+        return false;
+    };
+    /*Validation whe the format isnt the correct one*/
+    if (!phone.match(/^[0-9]{11}$/)) {
+        phoneError.innerHTML = 'Enter a valid phone';
+        return false;
+    }
+    /*Validation when its ok*/
+    phoneError.innerHTML = '<i class=\"fa-solid fa-circle-check\"></i>';
+    return true;
 }
 
-function setSuccessFor(input) {
-	const formControl = input.parentElement;
-	formControl.className = 'form-control success';
+function validateEmail(){
+    let email = document.getElementById('contact-email').value;
+    /*Validation for when its empty*/
+    if (email.length == 0) {
+        emailError.innerHTML = 'Email is required';
+        return false;
+    };
+    /*Validation whe the format isnt the correct one*/
+    if (!email.match( /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) {
+        emailError.innerHTML = 'Enter a valid email';
+        return false;
+    }
+    /*Validation when its ok*/
+    emailError.innerHTML = '<i class=\"fa-solid fa-circle-check\"></i>';
+    return true;
+}
+
+function validateMessage(){
+    let message = document.getElementById('contact-message').value;
+    let required = 30;
+    let left = required - message.length;
+    /*Validation for when its empty*/
+    if (left > 0) {
+        messageError.innerHTML = left + ' more characters required';
+        return false;
+    };
+    
+    /*Validation when its ok*/
+    messageError.innerHTML = '<i class=\"fa-solid fa-circle-check\"></i>';
+    return true;
+}
+
+function validateForm() {
+    if (!validateName() || !validatePhone() || !validateEmail() || !validateMessage()) {
+        submitError.style.display = 'block';
+        submitError.innerHTML = 'Please fix error to submit.';
+        setTimeout(function(){submitError.style.display = 'none';}, 3000)
+        return false;
+    }
+    return true;
 }
